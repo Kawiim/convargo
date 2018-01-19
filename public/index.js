@@ -151,7 +151,7 @@ console.log(actors);
 
 
 //STEP ONE : 
-
+console.log("STEP ONE");
 deliveries.forEach(function(delivery) {
   var truckerId = delivery.truckerId,
       pricePerKm,
@@ -170,3 +170,38 @@ deliveries.forEach(function(delivery) {
 
   console.log("[" + delivery.id + "] Price : " + total );
 });
+
+
+// STEP TWO
+console.log("STEP TWO");
+deliveries.forEach(function(delivery) {
+  var truckerId = delivery.truckerId,
+      pricePerKm,
+      pricePerVolume,
+      compVolume,
+      compDistance,
+      total;
+
+  truckers.forEach(function(trucker) {
+    if(trucker.id == truckerId) {
+      pricePerKm = trucker.pricePerKm;
+      pricePerVolume = trucker.pricePerVolume;
+    }
+  });
+
+  if(delivery.volume > 5 && delivery.volume < 10){
+    compVolume = delivery.volume * (pricePerVolume - (0.1 * pricePerVolume));
+  } else if(delivery.volume > 10 && delivery.volume < 25) {
+    compVolume = delivery.volume * (pricePerVolume - (0.3 * pricePerVolume));
+  } else if(delivery.volume > 25) {
+    compVolume = delivery.volume * (pricePerVolume - (0.5 * pricePerVolume));
+  } else {
+    compVolume = delivery.volume * pricePerVolume;
+  }
+  
+  compDistance = delivery.distance * pricePerKm;
+  total = compDistance + compVolume;
+
+  console.log("[" + delivery.id + "] Price : " + total );
+});
+
