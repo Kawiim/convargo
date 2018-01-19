@@ -151,9 +151,9 @@ console.log(actors);
 
 
 
-// STEP FOUR
+// STEP FIVE
 
-console.log("STEP FOUR");
+console.log("STEP FIVE");
 deliveries.forEach(function(delivery) {
   var truckerId = delivery.truckerId,
       pricePerKm,
@@ -185,7 +185,7 @@ deliveries.forEach(function(delivery) {
 
   var commission = 0.3 * total,
       insurance = 0.5 * commission,
-      treasury = Math.floor(delivery.distance / 500),
+      treasury = Math.floor(delivery.distance / 500) + 1,
       convargo = commission - insurance - treasury,
       deductible;
 
