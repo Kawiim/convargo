@@ -168,7 +168,8 @@ deliveries.forEach(function(delivery) {
       compDistance = delivery.distance * pricePerKm,
       total = compDistance + compVolume;
 
-  console.log("[" + delivery.id + "] Price : " + total );
+  delivery.price = total;
+  console.log(delivery);
 });
 
 
@@ -202,6 +203,50 @@ deliveries.forEach(function(delivery) {
   compDistance = delivery.distance * pricePerKm;
   total = compDistance + compVolume;
 
-  console.log("[" + delivery.id + "] Price : " + total );
+  delivery.price = total;
+  console.log(delivery);
 });
 
+
+//STEP THREE
+console.log("STEP THREE");
+deliveries.forEach(function(delivery) {
+  var truckerId = delivery.truckerId,
+      pricePerKm,
+      pricePerVolume,
+      compVolume,
+      compDistance,
+      total;
+
+  truckers.forEach(function(trucker) {
+    if(trucker.id == truckerId) {
+      pricePerKm = trucker.pricePerKm;
+      pricePerVolume = trucker.pricePerVolume;
+    }
+  });
+
+  if(delivery.volume > 5 && delivery.volume < 10){
+    compVolume = delivery.volume * (pricePerVolume - (0.1 * pricePerVolume));
+  } else if(delivery.volume > 10 && delivery.volume < 25) {
+    compVolume = delivery.volume * (pricePerVolume - (0.3 * pricePerVolume));
+  } else if(delivery.volume > 25) {
+    compVolume = delivery.volume * (pricePerVolume - (0.5 * pricePerVolume));
+  } else {
+    compVolume = delivery.volume * pricePerVolume;
+  }
+  
+  compDistance = delivery.distance * pricePerKm;
+  total = compDistance + compVolume;
+
+
+  var commission = 0.3 * total,
+      insurance = 0.5 * commission,
+      treasury = Math.floor(delivery.distance / 500),
+      convargo = commission - insurance - treasury;
+
+  delivery.commission.insurance = insurance;
+  delivery.commission.treasury = treasury;
+  delivery.commission.convargo = convargo;
+
+  console.log(delivery);
+});
