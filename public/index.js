@@ -202,4 +202,30 @@ deliveries.forEach(function(delivery) {
   delivery.commission.convargo = convargo;
 
   console.log(delivery);
+
+  actors.forEach(function(actor) {
+    if(actor.deliveryId == delivery.id){
+      actor.payment.forEach(function(payment){
+        switch(payment.who){
+          case "shipper":
+            payment.amount = total;
+            break;
+          case "trucker":
+            payment.amount = total - commission;
+            break;
+          case "insurance":
+            payment.amount = insurance;
+            break;
+          case "treasury":
+            payment.amount = treasury;
+            break;
+          case "convargo":
+            payment.amount = convargo;
+            break;
+        }
+      })
+    }
+  });
+
+  console.log(actors);
 });
