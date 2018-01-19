@@ -148,3 +148,25 @@ const actors = [{
 console.log(truckers);
 console.log(deliveries);
 console.log(actors);
+
+
+//STEP ONE : 
+
+deliveries.forEach(function(delivery) {
+  var truckerId = delivery.truckerId,
+      pricePerKm,
+      pricePerVolume;
+
+  truckers.forEach(function(trucker) {
+    if(trucker.id == truckerId) {
+      pricePerKm = trucker.pricePerKm;
+      pricePerVolume = trucker.pricePerVolume;
+    }
+  });
+
+  var compVolume = delivery.volume * pricePerVolume,
+      compDistance = delivery.distance * pricePerKm,
+      total = compDistance + compVolume;
+
+  console.log("[" + delivery.id + "] Price : " + total );
+});
