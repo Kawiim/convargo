@@ -150,66 +150,10 @@ console.log(deliveries);
 console.log(actors);
 
 
-//STEP ONE : 
-console.log("STEP ONE");
-deliveries.forEach(function(delivery) {
-  var truckerId = delivery.truckerId,
-      pricePerKm,
-      pricePerVolume;
 
-  truckers.forEach(function(trucker) {
-    if(trucker.id == truckerId) {
-      pricePerKm = trucker.pricePerKm;
-      pricePerVolume = trucker.pricePerVolume;
-    }
-  });
+// STEP FOUR
 
-  var compVolume = delivery.volume * pricePerVolume,
-      compDistance = delivery.distance * pricePerKm,
-      total = compDistance + compVolume;
-
-  delivery.price = total;
-  console.log(delivery);
-});
-
-
-// STEP TWO
-console.log("STEP TWO");
-deliveries.forEach(function(delivery) {
-  var truckerId = delivery.truckerId,
-      pricePerKm,
-      pricePerVolume,
-      compVolume,
-      compDistance,
-      total;
-
-  truckers.forEach(function(trucker) {
-    if(trucker.id == truckerId) {
-      pricePerKm = trucker.pricePerKm;
-      pricePerVolume = trucker.pricePerVolume;
-    }
-  });
-
-  if(delivery.volume > 5 && delivery.volume < 10){
-    compVolume = delivery.volume * (pricePerVolume - (0.1 * pricePerVolume));
-  } else if(delivery.volume > 10 && delivery.volume < 25) {
-    compVolume = delivery.volume * (pricePerVolume - (0.3 * pricePerVolume));
-  } else if(delivery.volume > 25) {
-    compVolume = delivery.volume * (pricePerVolume - (0.5 * pricePerVolume));
-  } else {
-    compVolume = delivery.volume * pricePerVolume;
-  }
-  
-  compDistance = delivery.distance * pricePerKm;
-  total = compDistance + compVolume;
-
-  delivery.price = total;
-  console.log(delivery);
-});
-
-
-//STEP THREE
-console.log("STEP THREE");
+console.log("STEP FOUR");
 deliveries.forEach(function(delivery) {
   var truckerId = delivery.truckerId,
       pricePerKm,
@@ -242,10 +186,19 @@ deliveries.forEach(function(delivery) {
   var commission = 0.3 * total,
       insurance = 0.5 * commission,
       treasury = Math.floor(delivery.distance / 500),
-      convargo = commission - insurance - treasury;
+      convargo = commission - insurance - treasury,
+      deductible;
 
   delivery.commission.insurance = insurance;
   delivery.commission.treasury = treasury;
+
+  if(delivery.options.deductibleReduction){
+    deductible = delivery.volume;
+    total += deductible;
+    convargo += deductible;
+  }
+
+  delivery.price = total;
   delivery.commission.convargo = convargo;
 
   console.log(delivery);
