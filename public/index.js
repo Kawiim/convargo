@@ -207,11 +207,9 @@ deliveries.forEach(function(delivery) {
         break;
     }
   })
-
-
-
-  console.log(actors);
 });
+
+console.log(actors);
 
 
 
