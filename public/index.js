@@ -150,7 +150,6 @@ console.log(deliveries);
 console.log(actors);
 
 
-
 // STEP FIVE
 
 console.log("STEP FIVE");
@@ -158,33 +157,13 @@ console.log("STEP FIVE");
 //Go through all deliveries
 deliveries.forEach(function(delivery) {
   var truckerId = delivery.truckerId,
-      pricePerKm,
-      pricePerVolume,
-      compVolume,
-      compDistance,
-      total;
-
-  //Go through truckers list to find the corresponding one
-  truckers.forEach(function(trucker) {
-    if(trucker.id == truckerId) {     //When found, get the associated prices
-      pricePerKm = trucker.pricePerKm;
-      pricePerVolume = trucker.pricePerVolume;
-    }
-  });
-
-  //Applying the reduction based on volume
-  if(delivery.volume > 5 && delivery.volume < 10){
-    compVolume = delivery.volume * (pricePerVolume - (0.1 * pricePerVolume));
-  } else if(delivery.volume > 10 && delivery.volume < 25) {
-    compVolume = delivery.volume * (pricePerVolume - (0.3 * pricePerVolume));
-  } else if(delivery.volume > 25) {
-    compVolume = delivery.volume * (pricePerVolume - (0.5 * pricePerVolume));
-  } else {
-    compVolume = delivery.volume * pricePerVolume;
-  }
-  
-  compDistance = delivery.distance * pricePerKm;
-  total = compDistance + compVolume;
+      trucker = getTruckerById(truckerId),
+      pricePerKm = trucker.pricePerKm,
+      pricePerVolume = trucker.pricePerVolume,
+      updatedPrice = calculateReductionOnVolume(delivery.volume, pricePerVolume),
+      compVolume = delivery.volume * updatedPrice,
+      compDistance = delivery.distance * pricePerKm,
+      total = compDistance + compVolume;
 
   //Start calculating commission
   var commission = 0.3 * total,
@@ -207,30 +186,69 @@ deliveries.forEach(function(delivery) {
 
   console.log(delivery);
 
-  // Fill the actors objects with the calculated values
-  actors.forEach(function(actor) {
-    if(actor.deliveryId == delivery.id){
-      actor.payment.forEach(function(payment){
-        switch(payment.who){
-          case "shipper":
-            payment.amount = total;
-            break;
-          case "trucker":
-            payment.amount = total - commission;
-            break;
-          case "insurance":
-            payment.amount = insurance;
-            break;
-          case "treasury":
-            payment.amount = treasury;
-            break;
-          case "convargo":
-            payment.amount = convargo;
-            break;
-        }
-      })
+  var actor = getActorById(delivery.id)
+
+  actor.payment.forEach(function(payment){
+    switch(payment.who){
+      case "shipper":
+        payment.amount = total;
+        break;
+      case "trucker":
+        payment.amount = total - commission;
+        break;
+      case "insurance":
+        payment.amount = insurance;
+        break;
+      case "treasury":
+        payment.amount = treasury;
+        break;
+      case "convargo":
+        payment.amount = convargo;
+        break;
     }
-  });
+  })
+
+
 
   console.log(actors);
 });
+
+
+
+function calculateReductionOnVolume(volume, pricePerVolume) {
+  var updatedPrice;
+
+  if(volume > 5 && volume < 10){
+    updatedPrice = pricePerVolume - (0.1 * pricePerVolume);
+  } else if(volume > 10 && volume < 25) {
+    updatedPrice = pricePerVolume - (0.3 * pricePerVolume);
+  } else if(volume > 25) {
+    updatedPrice = pricePerVolume - (0.5 * pricePerVolume);
+  } else {
+    updatedPrice = pricePerVolume;
+  }
+  return updatedPrice;
+}
+
+
+function getTruckerById(id) {
+  var truckerReturned;
+  truckers.forEach(function(trucker) {
+    if(trucker.id == id) {     //When found, get the associated prices
+      truckerReturned = trucker;
+    }
+  });
+  return truckerReturned;
+}
+
+
+function getActorById(id) {
+  var actorReturned;
+
+  actors.forEach(function(actor) {
+    if(actor.deliveryId == id){
+      actorReturned = actor;
+    }
+  });
+  return actorReturned;
+}
